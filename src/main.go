@@ -5,40 +5,21 @@ import (
 	"time"
 )
 
-var num int = 0
-
-func funcA() {
-	for i := 0; i < 50000; i++ {
-		num++
-		fmt.Printf("A: %d\n", num)
-		// time.Sleep(time.Duration(1) * time.Second)
-	}
+func funcA(c chan int) {
+	time.Sleep(time.Duration(2) * time.Second)
+	c <- 18
 }
 
-func funcB() {
-	for i := 0; i < 50000; i++ {
-		num++
-		fmt.Printf("A: %d\n", num)
-		// time.Sleep(time.Duration(1) * time.Second)
-	}
-}
-
-func mainSleep() {
-	for {
-		time.Sleep(time.Duration(1) * time.Hour)
-	}
+func funcB(c chan int) {
+	time.Sleep(time.Duration(3) * time.Second)
+	c <- 96
 }
 
 func main() {
-	// fmt.Println("你好世界")
-	// go funcA()
-	// go funcB()
-	// fmt.Println("数据源是")
-	// mainSleep()
-
-	num := time.Now().UnixNano()
-	fmt.Println(num)
-	time.Sleep(time.Duration(1) * time.Second)
-	num = time.Now().UnixNano()
-	fmt.Println(num)
+	c := make(chan int)
+	go funcA(c)
+	go funcB(c)
+	num1 := <-c
+	num2 := <-c
+	fmt.Println(num1, num2)
 }
